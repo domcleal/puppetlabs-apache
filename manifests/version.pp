@@ -6,7 +6,7 @@ class apache::version {
 $d = 2.2
   case $::osfamily {
     'RedHat': {
-      if $::operatingsystem == 'Fedora' and $::operatingsystemrelease >= 18 {
+      if ($::operatingsystem == 'Fedora' and $::operatingsystemrelease >= 18) or ($::operatingsystem != 'Fedora' and $::operatingsystemrelease >= 7) {
         $default = 2.4
       } else {
         $default = 2.2

@@ -19,16 +19,6 @@ class apache::default_mods (
     case $::osfamily {
       'debian': {
         include apache::mod::reqtimeout
-
-        if $::osfamily == 'debian' and $apache_version >= 2.4 {
-          # authz_core is needed for 'Require' directive
-          apache::mod { 'authz_core':
-            id => 'authz_core_module',
-          }
-
-          # filter is needed by mod_deflate
-          apache::mod { 'filter': }
-        }
       }
       'redhat': {
         include apache::mod::cache
@@ -120,16 +110,6 @@ class apache::default_mods (
     apache::mod { 'auth_basic': }
     apache::mod { 'authn_file': }
 
-    if $apache_version < 2.4 {
-      apache::mod { 'authz_default': }
-    }
-
-    apache::mod { 'authz_groupfile': }
-    apache::mod { 'authz_user': }
-    apache::mod { 'env': }
-  } elsif $mods {
-    apache::default_mods::load { $mods: }
-
     if $apache_version >= 2.4 {
       # authz_core is needed for 'Require' directive
       apache::mod { 'authz_core':
@@ -138,6 +118,14 @@ class apache::default_mods (
 
       # filter is needed by mod_deflate
       apache::mod { 'filter': }
+    } else {
+      apache::mod { 'authz_default': }
     }
+
+    apache::mod { 'authz_groupfile': }
+    apache::mod { 'authz_user': }
+    apache::mod { 'env': }
+  } elsif $mods {
+    apache::default_mods::load { $mods: }
   }
 }
